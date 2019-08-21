@@ -1,8 +1,29 @@
 use clap::{Arg, App, SubCommand};
 
+use structopt::StructOpt;
+
 const APP_NAME: &'static str = env!("CARGO_PKG_NAME");
 const APP_VERSION: &'static str = env!("CARGO_PKG_VERSION");
 const APP_AUTHORS: &'static str = env!("CARGO_PKG_AUTHORS");
+
+#[derive(StructOpt, Debug)]
+#[structopt(name = "kvs", about = "key value store")]
+enum KVS {
+    #[structopt(name = "get")]
+    Get {
+        key: String,
+    },
+    #[structopt(name = "set")]
+    Set {
+        key: String,
+        value: String,
+    },
+    #[structopt(name = "rm")]
+    Rm {
+        key: String,
+    }
+}
+
 fn main() {
     let matches = App::new(APP_NAME)
         .version(APP_VERSION)
@@ -24,27 +45,22 @@ fn main() {
             .required(true)
             .takes_value(true)))
         .get_matches();
+
+    let config = KVS::from_args();
+    println!("{:#?}", config);
     
-    match matches.subcommand_name() {
-        Some("get") => {
-            let value = matches.subcommand_matches("get").unwrap().value_of("key").unwrap();
-            println!("{} {}", "get", value);
+    match config {
+        KVS::Get{key} => {
+            let value = key + "random";
             unimplemented!("unimplemented")
         },
-        Some("set") => {
-            let sm = matches.subcommand_matches("set").unwrap();
-            let key = sm.value_of("key").unwrap();
-            let value = sm.value_of("value").unwrap();
+        KVS::Set{key, value} => {
             println!("{} {} {}", "set", key, value);
             unimplemented!("unimplemented")
         }
-        Some("rm") => {
-            let sm = matches.subcommand_matches("rm").unwrap();
-            let key = sm.value_of("key").unwrap();
+        KVS::Rm{key} => {
             println!("{} {}", "rm", key);
             unimplemented!("unimplemented")
         }
-        None        => panic!(),
-        _           => println!("Some other subcommand was used"),
     }
 }
