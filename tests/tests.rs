@@ -1,8 +1,7 @@
-use kvs::KvStore;
 use assert_cmd::prelude::*;
+use kvs::KvStore;
 use predicates::str::contains;
 use std::process::Command;
-
 
 // `kvs` with no args should exit with a non-zero code.
 #[test]
