@@ -13,3 +13,6 @@ structopt = "*"
 predicates = "1.0.0"
 tempfile = "3.0.7"
 walkdir = "2.2.7"
+failure = "*"
+serde = { version = "1.0", features = ["derive"] }
+ron = "*"

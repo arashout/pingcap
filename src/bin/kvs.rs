@@ -1,5 +1,8 @@
 use structopt::StructOpt;
 
+extern crate kvs;
+
+// TODO: Move this enum to the lib? and re-use it here
 #[derive(StructOpt, Debug)]
 enum KVS {
     #[structopt(name = "get")]
@@ -10,22 +13,20 @@ enum KVS {
     Rm { key: String },
 }
 
-fn main() {
+fn main() -> kvs::CustomResult<()> {
     let config = KVS::from_args();
     println!("{:#?}", config);
-
+    let mut kv_store = kvs::KvStore::open()?;
     match config {
         KVS::Get { key } => {
-            let value = key + "random";
             unimplemented!("unimplemented")
         }
         KVS::Set { key, value } => {
-            println!("{} {} {}", "set", key, value);
-            unimplemented!("unimplemented")
+            kv_store.set(key, value);
         }
         KVS::Rm { key } => {
-            println!("{} {}", "rm", key);
             unimplemented!("unimplemented")
         }
     }
+    Ok(())
 }
