@@ -13,20 +13,24 @@ enum KVS {
     Rm { key: String },
 }
 
-fn main() -> kvs::CustomResult<()> {
+fn main() -> kvs::Result<()> {
     let config = KVS::from_args();
-    println!("{:#?}", config);
-    let mut kv_store = kvs::KvStore::open()?;
+    let path = std::path::Path::new(kvs::LOG_FILE);
+    let mut kv_store = kvs::KvStore::open(path)?;
     match config {
         KVS::Get { key } => {
-            unimplemented!("unimplemented")
-        }
+            if let Ok(vr) = kv_store.get(key) {
+                if let Some(v) = vr {
+                    println!("{}", v);
+                }
+            }
+        },
         KVS::Set { key, value } => {
-            kv_store.set(key, value);
+            kv_store.set(key, value).expect("Somehow failed set");
         }
         KVS::Rm { key } => {
-            unimplemented!("unimplemented")
-        }
+            kv_store.remove(key).expect("Somehow failed rm");
+        },
     }
     Ok(())
 }
